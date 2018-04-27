@@ -6,7 +6,7 @@ Huang, Jingwei, Hao Su, and Leonidas Guibas. [**Robust Watertight Manifold Surfa
 
 ## Install and Run
 
-For linux and mac user, run sh demo.sh to build and try the manifold example.
+For linux and mac user, run **sh demo.sh** to build and try the manifold example.
 
 ### Install
 
