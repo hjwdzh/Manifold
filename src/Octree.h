@@ -71,7 +71,7 @@ public:
 		length = glm::dvec3(length[ind]+thickness, length[ind]+thickness, length[ind]+thickness);
 		face_indices = faces;
 		face_ind.resize(faces.size());
-		for (int i = 0; i < faces.size(); ++i)
+		for (int i = 0; i < (int)faces.size(); ++i)
 			face_ind[i] = i;
 		occupied = 1;
 		exterior = 0;
@@ -173,7 +173,7 @@ public:
 					children[ind]->occupied = 0;
 					children[ind]->number = 0;
 
-					for (int face = 0; face < face_indices.size(); ++face) {
+					for (int face = 0; face < (int)face_indices.size(); ++face) {
 						if (Intersection(face, startpoint, halfsize, vertices)) {
 							children[ind]->face_indices.push_back(face_indices[face]);
 							children[ind]->face_ind.push_back(face_ind[face]);

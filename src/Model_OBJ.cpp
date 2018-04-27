@@ -30,7 +30,7 @@ void Model_OBJ::Calc_Bounding_Box()
 {
 	min_corner = glm::dvec3(1e30,1e30,1e30);
 	max_corner = -min_corner;
-	for (int i = 0; i < vertices.size(); ++i)
+	for (int i = 0; i < (int)vertices.size(); ++i)
 	{
 		for (int j = 0; j < 3; ++j)
 		{
@@ -55,7 +55,6 @@ void Model_OBJ::Build_Tree(int resolution)
 	tree = new Octree(min_corner, max_corner, face_indices, 0.01);
 	while (tree->number < resolution)
 	{
-		cout << tree->number << "\n";
 		tree->Split(vertices);
 	}
 
@@ -69,7 +68,7 @@ void Model_OBJ::Build_Tree(int resolution)
 		tree->ExpandEmpty(empty_list, empty_set, i);
 	}
 
-	while (empty_list.size() > 0)
+	while ((int)empty_list.size() > 0)
 	{
 		Octree* empty = empty_list.front();
 		empty->exterior = 1;
@@ -192,7 +191,7 @@ void Model_OBJ::Construct_Manifold()
 	tree->ConstructFace(vcolor,glm::ivec3(0,0,0),nvertices,nface_indices, v_faces);
 	Split_Grid(vcolor, nvertices, nface_indices, v_faces, triangles);
 	vector<int> hash_v(nvertices.size(),0);
-	for (int i = 0; i < triangles.size(); ++i)
+	for (int i = 0; i < (int)triangles.size(); ++i)
 	{
 		for (int j = 0; j < 3; ++j)
 		{
@@ -200,18 +199,18 @@ void Model_OBJ::Construct_Manifold()
 		}
 	}
 	vertices.clear();
-	for (int i = 0; i < hash_v.size(); ++i)
+	for (int i = 0; i < (int)hash_v.size(); ++i)
 	{
 		if (hash_v[i])
 		{
-			hash_v[i] = vertices.size();
+			hash_v[i] = (int)vertices.size();
 			v_faces[vertices.size()] = v_faces[i];
 			v_info[vertices.size()] = v_info[i];
 			vertices.push_back(nvertices[i]);
 			colors.push_back(glm::dvec3(1,1,1));
 		}
 	}
-	for (int i = 0; i < triangles.size(); ++i)
+	for (int i = 0; i < (int)triangles.size(); ++i)
 	{
 		for (int j = 0; j < 3; ++j)
 		{
@@ -255,7 +254,7 @@ void Model_OBJ::Project_Manifold()
 
 	vector<vector<int> > vertex_faces(vertices.size());
 	face_normals.resize(face_indices.size());
-	for (int i = 0; i < face_indices.size(); ++i)
+	for (int i = 0; i < (int)face_indices.size(); ++i)
 	{
 		int id[3];
 		id[0] = face_indices[i][0];
@@ -271,7 +270,7 @@ void Model_OBJ::Project_Manifold()
 
 for (int iter = 0; iter < ITER_NUM; ++iter) {
 
-	for (int i = 0; i < face_indices.size(); ++i)
+	for (int i = 0; i < (int)face_indices.size(); ++i)
 	{
 		int id[3];
 		id[0] = face_indices[i][0];
@@ -284,7 +283,7 @@ for (int iter = 0; iter < ITER_NUM; ++iter) {
 	vector<int> invalid_vertices;
 	vector<int> invalid_indices(vertices.size(), -1);
 
-	for (int i = 0; i < vertices.size(); ++i)
+	for (int i = 0; i < (int)vertices.size(); ++i)
 	{
 		if (vertices_hash[i])
 			continue;
@@ -295,14 +294,14 @@ for (int iter = 0; iter < ITER_NUM; ++iter) {
 		double step = orig_step;
 		bool flag = step < 1e20;
 		glm::dvec3 normal(0,0,0);
-		for (int j = 0; j < vertex_faces[i].size(); ++j)
+		for (int j = 0; j < (int)vertex_faces[i].size(); ++j)
 		{
 			normal += face_normals[vertex_faces[i][j]];
 		}
 		normal = glm::normalize(normal);
 		if (flag) {
 			bool convex = true;
-			for (int j = 0; j < vertex_faces[i].size(); ++j)
+			for (int j = 0; j < (int)vertex_faces[i].size(); ++j)
 			{
 				for (int k = 0; k < 3; ++k) {
 					if (glm::dot(vertices[face_indices[vertex_faces[i][j]][k]] - vertices[i], normal) > 0)
@@ -313,7 +312,7 @@ for (int iter = 0; iter < ITER_NUM; ++iter) {
 			}
 			if (convex)
 			{
-				for (int j = 0; j < vertex_faces[i].size(); ++j)
+				for (int j = 0; j < (int)vertex_faces[i].size(); ++j)
 				{
 					if (glm::dot(face_normals[vertex_faces[i][j]],move_dir)>0)
 					{
@@ -324,7 +323,7 @@ for (int iter = 0; iter < ITER_NUM; ++iter) {
 			} else 
 			{
 				flag = false;
-				for (int j = 0; j < vertex_faces[i].size(); ++j)
+				for (int j = 0; j < (int)vertex_faces[i].size(); ++j)
 				{
 					if (glm::dot(face_normals[vertex_faces[i][j]],move_dir)<0)
 					{
@@ -338,7 +337,7 @@ for (int iter = 0; iter < ITER_NUM; ++iter) {
 		{
 			if (step > min_step * len)
 				step = min_step * len;
-			for (int j = 0; j < vertex_faces[i].size(); ++j)
+			for (int j = 0; j < (int)vertex_faces[i].size(); ++j)
 			{
 				glm::ivec3& face_index = face_indices[vertex_faces[i][j]];
 				int t = 0;
@@ -352,7 +351,7 @@ for (int iter = 0; iter < ITER_NUM; ++iter) {
 				if (h_step > h_len * 0.7)
 				{
 					step *= (h_len * 0.7) / h_step;
-					invalid_indices[i] = invalid_vertices.size();
+					invalid_indices[i] = (int)invalid_vertices.size();
 					invalid_vertices.push_back(i);
 					colors[i] = glm::dvec3(0,0,1);
 				}
@@ -366,7 +365,7 @@ for (int iter = 0; iter < ITER_NUM; ++iter) {
 				vertices_hash[i] = 1;
 			} else
 			vertices[i] += step * move_dir;//* 0.1 * glm::normalize(move_dir);
-			for (int j = 0; j < vertex_faces[i].size(); ++j)
+			for (int j = 0; j < (int)vertex_faces[i].size(); ++j)
 			{
 				int face = vertex_faces[i][j];
 				face_normals[face] = glm::normalize(glm::cross(vertices[face_indices[face][1]] - vertices[face_indices[face][0]],
@@ -374,7 +373,7 @@ for (int iter = 0; iter < ITER_NUM; ++iter) {
 			}
 		} else
 		{
-			invalid_indices[i] = invalid_vertices.size();
+			invalid_indices[i] = (int)invalid_vertices.size();
 			invalid_vertices.push_back(i);
 			colors[i] = glm::dvec3(0,0,1);
 		}
@@ -382,7 +381,7 @@ for (int iter = 0; iter < ITER_NUM; ++iter) {
 //	cout << "Invalid " << invalid_vertices.size() << "\n";
 	vector<int> invalid_colors(invalid_vertices.size(), -1);
 	int c = 0;
-	for (int i = 0; i < invalid_vertices.size(); ++i)
+	for (int i = 0; i < (int)invalid_vertices.size(); ++i)
 	{
 		if (invalid_colors[i] == -1)
 		{
@@ -391,10 +390,10 @@ for (int iter = 0; iter < ITER_NUM; ++iter) {
 			vector<int> queue;
 			int f = 0;
 			queue.push_back(i);
-			while (f != queue.size())
+			while (f != (int)queue.size())
 			{
 				int id = invalid_vertices[queue[f]];
-				for (int j = 0; j < vertex_faces[id].size(); ++j)
+				for (int j = 0; j < (int)vertex_faces[id].size(); ++j)
 				{
 					for (int k = 0; k < 3; ++k)
 					{
@@ -414,7 +413,7 @@ for (int iter = 0; iter < ITER_NUM; ++iter) {
 				glm::dvec3 midpoint(0,0,0);
 				int count = 0;
 				int id = invalid_vertices[*it];
-				for (int j = 0; j < vertex_faces[id].size(); ++j)
+				for (int j = 0; j < (int)vertex_faces[id].size(); ++j)
 				{
 					for (int k = 0; k < 3; ++k)
 					{
@@ -432,7 +431,7 @@ for (int iter = 0; iter < ITER_NUM; ++iter) {
 				if (l == 0 || count == 0)
 					continue;
 				move_dir /= l;
-				for (int j = 0; j < vertex_faces[id].size(); ++j)
+				for (int j = 0; j < (int)vertex_faces[id].size(); ++j)
 				{
 					glm::ivec3& face_index = face_indices[vertex_faces[id][j]];
 					int t = 0;
@@ -451,7 +450,7 @@ for (int iter = 0; iter < ITER_NUM; ++iter) {
 				move_dir *= l;
 				vertices[id] += move_dir;
 			}
-			for (int i = 0; i < queue.size(); ++i)
+			for (int i = 0; i < (int)queue.size(); ++i)
 			{
 				invalid_colors[queue[i]] = c;
 			}
@@ -474,7 +473,7 @@ void Model_OBJ::Build_BVH()
 {
 	bvh = new BVH();
 	bvs.resize(face_indices.size());
-	for (int i = 0; i < face_indices.size(); ++i)
+	for (int i = 0; i < (int)face_indices.size(); ++i)
 	{
 		bvs[i] = new BV(vertices[face_indices[i][0]],
 			vertices[face_indices[i][1]],
@@ -496,7 +495,7 @@ void Model_OBJ::Process_Manifold(int resolution)
 	{
 	vector<glm::dvec3> dis(vertices.size());
 	vector<int> dis_weight(vertices.size());
-	for (int i = 0; i < face_indices.size(); ++i)
+	for (int i = 0; i < (int)face_indices.size(); ++i)
 	{
 		for (int j = 0; j < 3; ++j)
 		{
@@ -508,7 +507,7 @@ void Model_OBJ::Process_Manifold(int resolution)
 			dis_weight[y] += 1;
 		}
 	}
-	for (int i = 0; i < vertices.size(); ++i)
+	for (int i = 0; i < (int)vertices.size(); ++i)
 	{
 		if (dis_weight[i] > 0)
 			vertices[i] = dis[i] * (1.0 / dis_weight[i]);
@@ -536,7 +535,7 @@ bool Model_OBJ::Split_Grid(map<Grid_Index,int>& vcolor, vector<glm::dvec3>& nver
 	}
 	set<int> marked_v;
 	map<pair<int,int>,list<pair<int,int> > > edge_info;
-	for (int i = 0; i < nface_indices.size(); ++i)
+	for (int i = 0; i < (int)nface_indices.size(); ++i)
 	{
 		for (int j = 0; j < 4; ++j)
 		{
@@ -571,7 +570,7 @@ bool Model_OBJ::Split_Grid(map<Grid_Index,int>& vcolor, vector<glm::dvec3>& nver
 	}
 	triangles.clear();
 	double half_len = glm::length(nvertices[nface_indices[0][1]] - nvertices[nface_indices[0][0]]) * 0.5;
-	for (int i = 0; i < nface_indices.size(); ++i)
+	for (int i = 0; i < (int)nface_indices.size(); ++i)
 	{
 		int t = 0;
 		while (t < 4 && marked_v.find(nface_indices[i][t]) == marked_v.end())
@@ -598,7 +597,7 @@ bool Model_OBJ::Split_Grid(map<Grid_Index,int>& vcolor, vector<glm::dvec3>& nver
 		{
 			vcolor.insert(make_pair(pt1,nvertices.size()));
 			v_info.push_back(pt1);
-			ind1 = nvertices.size();
+			ind1 = (int)nvertices.size();
 			nvertices.push_back((nvertices[ind[0]]+nvertices[ind[1]])*0.5);
 			v_faces.push_back(v_faces[ind[0]]);
 		} else
@@ -608,7 +607,7 @@ bool Model_OBJ::Split_Grid(map<Grid_Index,int>& vcolor, vector<glm::dvec3>& nver
 		{
 			vcolor.insert(make_pair(pt2,nvertices.size()));
 			v_info.push_back(pt2);
-			ind2 = nvertices.size();
+			ind2 = (int)nvertices.size();
 			v_faces.push_back(v_faces[ind[0]]);
 			nvertices.push_back((nvertices[ind[0]]+nvertices[ind[3]])*0.5);
 		} else
@@ -620,7 +619,7 @@ bool Model_OBJ::Split_Grid(map<Grid_Index,int>& vcolor, vector<glm::dvec3>& nver
 			{
 				vcolor.insert(make_pair(pt4,nvertices.size()));
 				v_info.push_back(pt4);
-				ind4 = nvertices.size();
+				ind4 = (int)nvertices.size();
 				nvertices.push_back((nvertices[ind[1]]+nvertices[ind[2]])*0.5);
 				if (flag1)
 					v_faces.push_back(v_faces[ind[1]]);
@@ -636,7 +635,7 @@ bool Model_OBJ::Split_Grid(map<Grid_Index,int>& vcolor, vector<glm::dvec3>& nver
 			{
 				vcolor.insert(make_pair(pt3,nvertices.size()));
 				v_info.push_back(pt3);
-				ind3 = nvertices.size();
+				ind3 = (int)nvertices.size();
 				nvertices.push_back((nvertices[ind[2]]+nvertices[ind[3]])*0.5);
 				if (flag2)
 					v_faces.push_back(v_faces[ind[2]]);
@@ -694,7 +693,6 @@ bool Model_OBJ::Split_Grid(map<Grid_Index,int>& vcolor, vector<glm::dvec3>& nver
 			triangles.push_back(glm::ivec3(ind1,ind3,ind4));
 		}
 	}
-	cout << nvertices.size() << "\n";
 	for (set<int>::iterator it = marked_v.begin();
 		it != marked_v.end(); ++it)
 	{
@@ -752,7 +750,7 @@ bool Model_OBJ::Split_Grid(map<Grid_Index,int>& vcolor, vector<glm::dvec3>& nver
 	map<int,set<pair<int,int> > > ocs, ecs;
 	set<int> odds;
 	set<int> evens;
-	for (int i = 0; i < nvertices.size(); ++i)
+	for (int i = 0; i < (int)nvertices.size(); ++i)
 	{
 		bool flag = false;
 		for (int k = 0; k < 3; ++k)
@@ -763,7 +761,7 @@ bool Model_OBJ::Split_Grid(map<Grid_Index,int>& vcolor, vector<glm::dvec3>& nver
 			ocs.insert(make_pair(i,set<pair<int,int> >()));
 		}
 	}
-	for (int i = 0; i < nvertices.size(); ++i)
+	for (int i = 0; i < (int)nvertices.size(); ++i)
 	{
 		Grid_Index ind = v_info[i];
 		int flag = 0;
@@ -806,7 +804,7 @@ bool Model_OBJ::Split_Grid(map<Grid_Index,int>& vcolor, vector<glm::dvec3>& nver
 		evens.insert(i);
 		ecs.insert(make_pair(i,set<pair<int,int> >()));
 	}
-	for (int i = 0; i < triangles.size(); ++i)
+	for (int i = 0; i < (int)triangles.size(); ++i)
 	{
 		for (int j = 0; j < 3; ++j)
 		{
@@ -847,7 +845,7 @@ bool Model_OBJ::Split_Grid(map<Grid_Index,int>& vcolor, vector<glm::dvec3>& nver
 			assert(triangles[it1->first][it1->second] == i);
 			if (glm::dot(nvertices[triangles[it1->first][(it1->second+1)%3]]-nvertices[i],dir)<0)
 			{
-				triangles[it1->first][it1->second] = nvertices.size();
+				triangles[it1->first][it1->second] = (int)nvertices.size();
 			}
 		}
 		nvertices[i] += dir * (0.5 * unit_len);
@@ -895,7 +893,7 @@ bool Model_OBJ::Split_Grid(map<Grid_Index,int>& vcolor, vector<glm::dvec3>& nver
 				assert(triangles[it1->first][it1->second] == i);
 				if (glm::dot(nvertices[triangles[it1->first][(it1->second+1)%3]]-nvertices[i],dir)<0)
 				{
-					triangles[it1->first][it1->second] = nvertices.size();
+					triangles[it1->first][it1->second] = (int)nvertices.size();
 				}
 			}
 			nvertices[i] += dir * (0.5 * len);
@@ -912,7 +910,7 @@ int Model_OBJ::is_manifold()
 	map<pair<int,int>,list<glm::dvec3> > edges;
 	vector<set<int> > graph(vertices.size());
 	int flag = 0;
-	for (int i = 0; i < face_indices.size(); ++i)
+	for (int i = 0; i < (int)face_indices.size(); ++i)
 	{
 		for (int j = 0; j < 3; ++j)
 		{
@@ -924,7 +922,7 @@ int Model_OBJ::is_manifold()
 				x = y;
 				y = temp;
 			}
-			if (x >= vertices.size() || y >= vertices.size())
+			if (x >= (int)vertices.size() || y >= (int)vertices.size())
 			{
 				flag = -1;
 			}
@@ -973,11 +971,11 @@ int Model_OBJ::is_manifold()
 void Model_OBJ::SaveOBJ(const char* filename)
 {
 	std::ofstream os(filename);
-	for (int i = 0; i < vertices.size(); ++i)
+	for (int i = 0; i < (int)vertices.size(); ++i)
 	{
 		os << "v " << vertices[i][0] << " " << vertices[i][1] << " " << vertices[i][2] << "\n";
 	}
-	for (int i = 0; i < face_indices.size(); ++i)
+	for (int i = 0; i < (int)face_indices.size(); ++i)
 	{
 		os << "f " << face_indices[i][0] + 1 << " " << face_indices[i][1] + 1 << " " << face_indices[i][2] + 1 << "\n";
 	}
@@ -992,7 +990,7 @@ void Model_OBJ::Save(const char* filename, bool color)
 	else
 		os << "OFF\n";
 	os << vertices.size() << " " << face_indices.size() << " " << 0 << "\n";
-	for (int i = 0; i < vertices.size(); ++i)
+	for (int i = 0; i < (int)vertices.size(); ++i)
 	{
 		if (color)
 			os << vertices[i][0] << " " << vertices[i][1] << " " << vertices[i][2] << " " << (int)(colors[i][2]*255) << " " << (int)(colors[i][1]*255) << " " << (int)(colors[i][0]*255) << " 255\n";
@@ -1000,7 +998,7 @@ void Model_OBJ::Save(const char* filename, bool color)
 			os << vertices[i][0] << " " << vertices[i][1] << " " << vertices[i][2] << "\n";
 	}
 	double min_len = 1e30, max_len = -1e30;
-	for (int i = 0; i < face_indices.size(); ++i)
+	for (int i = 0; i < (int)face_indices.size(); ++i)
 	{
 		for (int j = 0; j < 3; ++j)
 		{
