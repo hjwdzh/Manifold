@@ -1,7 +1,7 @@
 #include "Model_OBJ.h"
 #include <queue>
 #define ITER_NUM 20
-
+int g_sharp = 0;
 Model_OBJ::Model_OBJ()
 {
 }
@@ -288,6 +288,10 @@ for (int iter = 0; iter < ITER_NUM; ++iter) {
 		if (vertices_hash[i])
 			continue;
 		glm::dvec3 cpoint = Find_Closest(i);
+		if (g_sharp) {
+			vertices[i] = cpoint;
+			continue;
+		}
 		glm::dvec3 move_dir = cpoint - vertices[i];
 		double orig_step = glm::length(move_dir);
 		move_dir /= orig_step;
