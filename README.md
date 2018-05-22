@@ -10,7 +10,7 @@ For linux and mac user, run **sh demo.sh** to build and try the manifold example
 
 ### Install
 
-git clone --recursive -j8 git://github.com/foo/bar.git
+git clone --recursive -j8 git://github.com/hjwdzh/Manifold
 
 mkdir build
 
