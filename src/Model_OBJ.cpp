@@ -288,15 +288,15 @@ for (int iter = 0; iter < ITER_NUM; ++iter) {
 		if (vertices_hash[i])
 			continue;
 		glm::dvec3 cpoint = Find_Closest(i);
-		if (g_sharp) {
-			vertices[i] = cpoint;
-			continue;
-		}
 		glm::dvec3 move_dir = cpoint - vertices[i];
 		double orig_step = glm::length(move_dir);
 		move_dir /= orig_step;
 		double step = orig_step;
-		bool flag = step < 1e20;
+		bool flag = step < 1e15;
+		if (g_sharp) {
+			vertices[i] = cpoint;
+			continue;
+		}
 		glm::dvec3 normal(0,0,0);
 		for (int j = 0; j < (int)vertex_faces[i].size(); ++j)
 		{
