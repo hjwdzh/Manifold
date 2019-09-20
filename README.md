@@ -4,6 +4,13 @@ Source code for the paper:
 
 Huang, Jingwei, Hao Su, and Leonidas Guibas. [**Robust Watertight Manifold Surface Generation Method for ShapeNet Models.**](https://arxiv.org/abs/1802.01698), arXiv preprint arXiv:1802.01698 (2018).
 
+## ShapeNet Manifold Dataset
+We prepare the manifold data for 13 categories from ShapeNetCore. You can download them by running the following script.
+```
+wget http://download.cs.stanford.edu/orion/Shapenet_Manifold/categories.txt
+wget -i categories.txt
+```
+
 ## Install and Run
 
 For Linux and Mac users, run `sh demo.sh` to build and try the manifold example.
@@ -14,7 +21,7 @@ For Linux and Mac users, run `sh demo.sh` to build and try the manifold example.
 git clone --recursive -j8 git://github.com/hjwdzh/Manifold
 mkdir build
 cd build
-cmake ..
+cmake .. -DCMAKE_BUILD_TYPE=Release
 make
 ```
 
