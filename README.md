@@ -4,6 +4,9 @@ Source code for the paper:
 
 Huang, Jingwei, Hao Su, and Leonidas Guibas. [**Robust Watertight Manifold Surface Generation Method for ShapeNet Models.**](https://arxiv.org/abs/1802.01698), arXiv preprint arXiv:1802.01698 (2018).
 
+## News!
+An advanced version has been released in this new [**repo**](https://github.com/hjwdzh/ManifoldPlus).
+
 ## ShapeNet Manifold Dataset
 We prepare the manifold data for 13 categories from ShapeNetCore. You can download them by running the following script.
 ```
