@@ -22,6 +22,7 @@ For Linux and Mac users, run `sh demo.sh` to build and try the manifold example.
 
 ```sh
 git clone --recursive -j8 git://github.com/hjwdzh/Manifold
+cd Manifold
 mkdir build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
